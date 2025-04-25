@@ -54,7 +54,7 @@ Upload a PDF via the /parse-pdf/ endpoint.
 
 To restrict access to the API, requests must include a header:
 
-x-edge-auth: supersecurekey
+x-edge-auth
 
 This key must match EDGE_SECRET in your .env.
 
