@@ -42,6 +42,11 @@ EDGE_SECRET=supersecurekey
 
 uvicorn visionparser_api:app --host 0.0.0.0 --port 8000 --reload
 
+You might need to specify the loop if you're using asyncio:
+
+uvicorn visionparser_api:app --reload --loop asyncio
+
+
 5. Test It
 
 Visit Swagger docs:
