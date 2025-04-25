@@ -4,7 +4,7 @@ load_dotenv()
 from fastapi.security.api_key import APIKeyHeader
 from fastapi import Security
 
-API_KEY_NAME = "x-edge-auth"
+API_KEY_NAME = "x-api-secret"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
 from fastapi import HTTPException, status
@@ -12,7 +12,7 @@ from fastapi import HTTPException, status
 import os
 
 async def verify_api_key(api_key: str = Security(api_key_header)):
-    expected_key = os.getenv("EDGE_SECRET")
+    expected_key = os.getenv("API_SECRET")
     if api_key != expected_key:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -52,11 +52,6 @@ parser = VisionParser(
 @app.post("/parse-pdf/", dependencies=[Security(verify_api_key)])
 async def parse_pdf(request: Request, file: UploadFile = File(...)):
     # Save the uploaded file to a temporary file
-    print(request.headers['x-edge-auth'])
-    print(os.getenv("EDGE_SECRET"))
-
-    if (request.headers['x-edge-auth'] != os.getenv("EDGE_SECRET")):
-        return JSONResponse(status_code=401, content={"error": "Unauthorized"})
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
         content = await file.read()

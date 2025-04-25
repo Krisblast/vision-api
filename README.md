@@ -14,29 +14,19 @@ OpenAI API key (for GPT-4o)
 
 1. Clone the Repo
 
-git clone https://github.com/your-org/vision-api
+git clone https://github.com/Krisblast/vision-api
 cd vision-api
 
 2. Set Up Your Environment
 
-Option A: Using Poetry (recommended)
-
-poetry install
-
-Option B: Using pip
+Using pip
 
 pip install -r requirements.txt
 
-If requirements.txt is missing, manually install:
+3. Copy .env.example file
 
-pip install fastapi uvicorn python-multipart vision-parse openai python-dotenv
+Set your OpenAI API key and any other secrets in a .env file.
 
-3. Add .env file
-
-Create a .env file in the root of the project:
-
-OPENAI_API_KEY=sk-...
-EDGE_SECRET=supersecurekey
 
 4. Start the API Server
 
@@ -54,9 +44,9 @@ Upload a PDF via the /parse-pdf/ endpoint.
 
 To restrict access to the API, requests must include a header:
 
-x-edge-auth
+x-api-secret
 
-This key must match EDGE_SECRET in your .env.
+This key must match API_SECRET in your .env.
 
 📦 Project Structure
 
