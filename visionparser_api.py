@@ -1,6 +1,25 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+from fastapi.security.api_key import APIKeyHeader
+from fastapi import Security
+
+API_KEY_NAME = "x-edge-auth"
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+
+from fastapi import HTTPException, status
+
+import os
+
+async def verify_api_key(api_key: str = Security(api_key_header)):
+    expected_key = os.getenv("EDGE_SECRET")
+    if api_key != expected_key:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid or missing API key",
+        )
+    return api_key
+
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -30,7 +49,7 @@ parser = VisionParser(
     enable_concurrency=True,
 )
 
-@app.post("/parse-pdf/")
+@app.post("/parse-pdf/", dependencies=[Security(verify_api_key)])
 async def parse_pdf(request: Request, file: UploadFile = File(...)):
     # Save the uploaded file to a temporary file
     print(request.headers['x-edge-auth'])
